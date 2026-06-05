@@ -27,3 +27,23 @@ export async function fetchGitHubUser(username) {
 
     return await response.json();
 }
+
+/**
+ * Получает последние 5 репозиториев пользователя GitHub.
+ * @param {string} username - Юзернейм на GitHub
+ * @returns {Promise<Array>} Массив репозиториев
+ * @throws {Error} Ошибка при получении данных
+ */
+export async function fetchGitHubUserRepos(username) {
+    if (!username || username.trim() === '') {
+        throw new Error('Пожалуйста, введите имя пользователя для поиска репозиториев');
+    }
+
+    const response = await fetch(`${BASE_URL}/${username.trim()}/repos?sort=created&direction=desc&per_page=5`);
+
+    if (!response.ok) {
+        throw new Error('Произошла ошибка при получении репозиториев. Попробуйте позже.');
+    }
+
+    return await response.json();
+}

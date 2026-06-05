@@ -9,7 +9,7 @@
  */
 export function renderUserCard(container, userData) {
     // Очищаем контейнер перед выводом новой карточки
-    container.innerHTML = '';
+    container.innerHTML = ""; // Очищаем только в начале отрисовки новой пары карточек
 
     // Подготовка данных с дефолтными значениями на случай их отсутствия
     const avatarUrl = userData.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150';
@@ -34,6 +34,36 @@ export function renderUserCard(container, userData) {
 
     // Добавляем карточку в контейнер
     container.appendChild(card);
+}
+
+/**
+ * Создает HTML-элемент карточки репозиториев и вставляет его в контейнер.
+ * @param {HTMLElement} container - Родительский контейнер для карточки
+ * @param {Array} reposData - Массив данных репозиториев от GitHub API
+ */
+export function renderRepoCard(container, reposData) {
+    if (!reposData || reposData.length === 0) {
+        // Если репозиториев нет, можно показать соответствующее сообщение или ничего не делать
+        // container.innerHTML += `<div class="info-state">Нет публичных репозиториев.</div>`;
+        return;
+    }
+
+    const repoCard = document.createElement("div");
+    repoCard.className = "repo-card user-card"; // Используем те же стили, что и для user-card
+
+    let reposHtml = reposData.map(repo => `
+        <div class="repo-item">
+            <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="repo-name">${repo.name}</a>
+            <p class="repo-description">${repo.description || "Без описания"}</p>
+        </div>
+    `).join("");
+
+    repoCard.innerHTML = `
+        <h3 class="repo-card-title">Последние 5 репозиториев</h3>
+        ${reposHtml}
+    `;
+
+    container.appendChild(repoCard);
 }
 
 /**
@@ -68,5 +98,5 @@ export function showError(container, message) {
  * @param {HTMLElement} container - Родительский контейнер
  */
 export function clearContainer(container) {
-    container.innerHTML = '';
+    container.innerHTML = "";
 }

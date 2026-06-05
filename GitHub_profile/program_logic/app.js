@@ -1,5 +1,5 @@
-import { fetchGitHubUser } from './api.js';
-import { renderUserCard, showLoading, showError } from './ui.js';
+import { fetchGitHubUser, fetchGitHubUserRepos } from './api.js';
+import { renderUserCard, renderRepoCard, showLoading, showError } from './ui.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const searchForm = document.getElementById('search-form');
@@ -27,6 +27,10 @@ document.addEventListener('DOMContentLoaded', () => {
             showLoading(cardsContainer);
             const userData = await fetchGitHubUser(username);
             renderUserCard(cardsContainer, userData);
+
+            const reposData = await fetchGitHubUserRepos(username);
+            renderRepoCard(cardsContainer, reposData);
+
         } catch (error) {
             showError(cardsContainer, error.message || 'Произошла непредвиденная ошибка');
         }

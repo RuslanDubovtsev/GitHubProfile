@@ -141,18 +141,26 @@ body {
     box-shadow: 0 0 0 3px var(--accent-focus);
 }
 
+.main-card {
+    display: flex;
+    flex-wrap: wrap;
+    /* width: calc(100% - 80px); 100% минус по 40px слева и справа */
+    margin: 50px 200px 20px 200px;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
 /* Контейнер для карточек - ниже поля ввода, с отступом 40px по бокам */
 .cards-container {
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
     gap: 24px;
-    /* width: calc(100% - 80px); 100% минус по 40px слева и справа */
-    margin: 50px 200px 20px 200px;
     justify-content: flex-start;
     align-items: flex-start;
 }
 
-/* Карточка пользователя */
+/* Общие стили для карточек */
 .user-card {
     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
@@ -173,8 +181,8 @@ body {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
 }
 
-/* Аватар в самом верху, круглый и крупный */
-.user-avatar {
+/* Стили для карточки профиля */
+.user-card .user-avatar {
     width: 120px;
     height: 120px;
     border-radius: 50%;
@@ -183,35 +191,77 @@ body {
     margin-bottom: 4px;
 }
 
-/* Имя пользователя */
-.user-name {
+.user-card .user-name {
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--text-primary);
     margin-bottom: 2px;
 }
 
-/* Подписчики и подписки мелким шрифтом */
-.user-stats {
+.user-card .user-stats {
     font-size: 0.85rem;
     color: var(--text-muted);
 }
 
-/* Репозитории мелким шрифтом */
-.user-repos {
+.user-card .user-repos {
     font-size: 0.85rem;
     color: var(--text-muted);
     margin-bottom: 4px;
 }
 
-/* Биография шрифтом побольше */
-.user-bio {
+.user-card .user-bio {
     font-size: 0.95rem;
     line-height: 1.5;
     color: var(--text-primary);
     border-top: 1px solid var(--border-color);
     padding-top: 12px;
     width: 100%;
+    text-align: left;
+}
+
+/* Стили для карточки репозиториев */
+.repo-card {
+    align-items: flex-start; /* Выравнивание элементов слева */
+    gap: 10px; /* Уменьшаем отступ для более плотного списка */
+}
+
+.repo-card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    width: 100%; /* Заголовок на всю ширину */
+    text-align: center;
+}
+
+.repo-item {
+    width: 100%;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed rgba(var(--border-color), 0.5); /* Пунктирная линия для разделения */
+}
+
+.repo-item:last-child {
+    border-bottom: none; /* Убираем линию у последнего элемента */
+    padding-bottom: 0;
+}
+
+.repo-name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #58a6ff; /* Ссылки на репозитории в стиле GitHub */
+    text-decoration: none;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.repo-name:hover {
+    text-decoration: underline;
+}
+
+.repo-description {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.4;
 }
 
 /* Спиннер загрузки */
