@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Подключаем JavaScript логику как модуль -->
+    <script type="module" src="program_logic/app.js" defer></script>
 </head>
 <body>
     <div class="app-container">
@@ -19,13 +21,19 @@
             </div>
         </header>
 
-        <!-- Секция поиска ниже шапочки -->
+        <!-- Секция поиска и результатов ниже шапочки -->
         <main class="main-content">
             <div class="search-section">
-                <div class="search-wrapper">
-                    <input type="text" placeholder="Введите юзернейм на GitHub..." class="search-input" aria-label="GitHub юзернейм">
-                    <button type="button" class="search-btn">Найти</button>
-                </div>
+                <!-- Форма позволяет искать и по кнопке, и по клавише Enter -->
+                <form class="search-wrapper" id="search-form">
+                    <input type="text" id="username-input" placeholder="Введите юзернейм на GitHub..." class="search-input" aria-label="GitHub юзернейм" required autocomplete="off">
+                    <button type="submit" class="search-btn">Найти</button>
+                </form>
+            </div>
+
+            <!-- Контейнер для карточек с отступами по бокам 40px -->
+            <div class="cards-container" id="cards-container">
+                <!-- Сюда динамически добавляются карточки пользователей -->
             </div>
         </main>
     </div>

@@ -12,13 +12,15 @@
     
     /* Цветовая палитра: Современный темный минимализм */
     --bg-color: #0d1117;          /* Глубокий темный фон (в стиле GitHub Dark) */
-    --card-bg: #161b22;           /* Фон для элементов */
+    --card-bg: #1c2128;           /* Фон для карточек (более светлый, чем основной фон) */
+    --input-bg: #161b22;          /* Фон для полей ввода */
     --border-color: #30363d;      /* Тонкая серая рамка */
     --text-primary: #f0f6fc;      /* Белый текст */
     --text-muted: #8b949e;        /* Приглушенный серый текст */
     --accent-color: #238636;      /* Зеленый акцент (кнопка поиска в стиле GitHub) */
     --accent-hover: #2ea043;      /* Более яркий зеленый при наведении */
     --accent-focus: rgba(35, 134, 54, 0.4);
+    --error-color: #f85149;       /* Красный цвет для ошибок */
 }
 
 body {
@@ -35,7 +37,7 @@ body {
 
 .app-container {
     width: 100%;
-    max-width: var(--header-width);
+    /* max-width: var(--header-width); */
     padding: 0 20px;
     margin-top: 40px;
     display: flex;
@@ -47,6 +49,7 @@ body {
 .header {
     width: 100%;
     border-bottom: 1px solid var(--border-color);
+    max-width: var(--header-width);
     padding-bottom: 20px;
     margin-bottom: 40px;
 }
@@ -68,7 +71,8 @@ body {
 .main-content {
     width: 100%;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    /* align-items: center; */
 }
 
 .search-section {
@@ -92,7 +96,7 @@ body {
     font-family: inherit;
     font-size: 0.95rem;
     color: var(--text-primary);
-    background-color: var(--card-bg);
+    background-color: var(--input-bg);
     border: 1px solid var(--border-color);
     border-radius: 6px;
     outline: none;
@@ -137,6 +141,124 @@ body {
     box-shadow: 0 0 0 3px var(--accent-focus);
 }
 
+/* Контейнер для карточек - ниже поля ввода, с отступом 40px по бокам */
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    /* width: calc(100% - 80px); 100% минус по 40px слева и справа */
+    margin: 50px 200px 20px 200px;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+/* Карточка пользователя */
+.user-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    width: 320px;
+    height: auto; /* Карточка расширяется в зависимости от информации */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.user-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+/* Аватар в самом верху, круглый и крупный */
+.user-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+    margin-bottom: 4px;
+}
+
+/* Имя пользователя */
+.user-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+/* Подписчики и подписки мелким шрифтом */
+.user-stats {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* Репозитории мелким шрифтом */
+.user-repos {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+/* Биография шрифтом побольше */
+.user-bio {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--text-primary);
+    border-top: 1px solid var(--border-color);
+    padding-top: 12px;
+    width: 100%;
+}
+
+/* Спиннер загрузки */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-top: 20px;
+}
+
+.spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(88, 166, 255, 0.2);
+    border-top: 3px solid #58a6ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Ошибка */
+.error-state {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(248, 81, 73, 0.1);
+    border: 1px solid rgba(248, 81, 73, 0.2);
+    padding: 12px 16px;
+    border-radius: 8px;
+    color: var(--error-color);
+    font-size: 0.9rem;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.error-icon {
+    font-size: 1.1rem;
+}
+
 /* Адаптивность для мобильных экранов */
 @media (max-width: 600px) {
     :root {
@@ -159,6 +281,17 @@ body {
     }
     
     .search-btn {
+        width: 100%;
+    }
+
+    .cards-container {
+        width: 100%;
+        margin: 24px 0 0 0;
+        padding: 0;
+        justify-content: center;
+    }
+
+    .user-card {
         width: 100%;
     }
 }
