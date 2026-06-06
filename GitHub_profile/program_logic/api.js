@@ -5,6 +5,20 @@
 const BASE_URL = 'https://api.github.com/users';
 
 
+async function checkErrors(response, username) {
+    if (response.status === 404) {
+        throw new Error(`Пользователь "${username}" не найден`);
+    }
+
+    if (response.status === 403) {
+        throw new Error(`Превышен лимит запросов к GitHub API`);
+    }
+
+    if (!response.ok) {
+        throw new Error('Произошла ошибка при получении данных. Попробуйте позже.');
+    }
+}
+
 /**
  * Получает информацию о пользователе GitHub по его имени.
  * @param {string} username - Юзернейм на GitHub
@@ -18,17 +32,7 @@ export async function fetchGitHubUser(username) {
     
     const response = await fetch(`${BASE_URL}/${username.trim()}`);
 
-    if (response.status === 404) {
-        throw new Error(`Пользователь "${username}" не найден`);
-    }
-
-    if (response.status === 403) {
-        throw new Error(`Превышен лимит запросов к GitHub API`);
-    }
-
-    if (!response.ok) {
-        throw new Error('Произошла ошибка при получении данных. Попробуйте позже.');
-    }
+    await checkErrors(response, username);
 
     return await response.json();
 }
@@ -46,13 +50,7 @@ export async function fetchGitHubUserRepos(username) {
 
     const response = await fetch(`${BASE_URL}/${username.trim()}/repos?sort=created&direction=desc&per_page=5`);
     
-    if (response.status === 403) {
-        throw new Error(`Превышен лимит запросов к GitHub API`);
-    }
-
-    if (!response.ok) {
-        throw new Error('Произошла ошибка при получении репозиториев. Попробуйте позже.');
-    }
+    await checkErrors(response, username);
 
     return await response.json();
 }
@@ -75,17 +73,9 @@ export async function fetchGitHubUserLanguages(username) {
     let hasMorePages = true;
 
     while (hasMorePages) {
-        const reposResponse = await fetch(
-            `${BASE_URL}/${username.trim()}/repos?per_page=100&sort=updated&page=${page}`
-        );
+        const reposResponse = await fetch(`${BASE_URL}/${username.trim()}/repos?per_page=100&sort=updated&page=${page}`);
 
-        if (reposResponse.status === 403) {
-            throw new Error(`Превышен лимит запросов к GitHub API`);
-        }
-
-        if (!reposResponse.ok) {
-            throw new Error('Произошла ошибка при получении данных о репозиториях. Попробуйте позже.');
-        }
+        await checkErrors(reposResponse, username) ;
 
         const repos = await reposResponse.json();
 
@@ -124,6 +114,6 @@ export async function fetchGitHubUserLanguages(username) {
             page++;
         }
     }
-
+    console.log("languageMap:", languageMap);
     return languageMap;
 }

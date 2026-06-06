@@ -72,7 +72,6 @@ body {
     width: 100%;
     display: flex;
     flex-direction: column;
-    /* align-items: center; */
 }
 
 .search-section {
@@ -81,7 +80,7 @@ body {
     justify-content: center;
 }
 
-/* Обертка для поля ввода и кнопки */
+/* Обертка для поля ввода и кнопок */
 .search-wrapper {
     display: flex;
     align-items: center;
@@ -141,18 +140,65 @@ body {
     box-shadow: 0 0 0 3px var(--accent-focus);
 }
 
+/* Красная кнопка "Сброс" */
+.reset-btn {
+    height: 44px;
+    padding: 0 24px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: var(--error-color);
+    border: 1px solid rgba(240, 246, 242, 0.1);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+    white-space: nowrap;
+}
+
+.reset-btn:hover {
+    background-color: #ff6b63;
+}
+
+.reset-btn:active {
+    transform: scale(0.98);
+}
+
+.reset-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(248, 81, 73, 0.4);
+}
+
+/* Контейнер для всех групп пользователей */
 .main-card {
     display: flex;
-    flex-wrap: wrap;
-    /* width: calc(100% - 80px); 100% минус по 40px слева и справа */
+    flex-direction: column;
+    align-items: center;
     margin: 50px 200px 20px 200px;
+    gap: 40px; /* Увеличил gap для отступов между группами и разделителем */
+}
+
+/* Группа пользователя: объединяет левую (профиль+репозитории) и правую (языки) колонки */
+.user-group {
+    display: flex;
+    flex-direction: row;
     justify-content: center;
-    gap: 100px;
+    gap: 40px; /* Уменьшил gap для лучшего вида */
     align-items: flex-start;
+    width: 100%;
+}
+
+/* Горизонтальный разделитель между группами пользователей */
+.user-separator {
+    width: 100%;
+    border: none;
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 20px 0; /* Отступ сверху и снизу от разделителя */
 }
 
 /* Левая колонка с карточками профиля и репозиториев */
-.left-column {
+.user-section {
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -160,7 +206,7 @@ body {
 }
 
 /* Правая колонка с карточкой топ языков */
-.right-column {
+.user-lang-section {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -173,13 +219,30 @@ body {
     border-radius: 12px;
     padding: 24px;
     width: 320px;
-    height: auto; /* Карточка расширяется в зависимости от информации */
+    height: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* Анимация появления карточек снизу-вверх с левой стороны */
+.card-animate {
+    opacity: 0;
+    animation: cardFadeInFromLeft 0.5s ease forwards;
+}
+
+@keyframes cardFadeInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px) translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) translateY(0);
+    }
 }
 
 .user-card:hover {
@@ -227,8 +290,8 @@ body {
 
 /* Стили для карточки репозиториев */
 .repo-card {
-    align-items: flex-start; /* Выравнивание элементов слева */
-    gap: 10px; /* Уменьшаем отступ для более плотного списка */
+    align-items: flex-start;
+    gap: 10px;
 }
 
 .repo-card-title {
@@ -236,32 +299,45 @@ body {
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 8px;
-    width: 100%; /* Заголовок на всю ширину */
+    width: 100%;
     text-align: center;
 }
 
 .repo-item {
     width: 100%;
     padding-bottom: 10px;
-    border-bottom: 1px dashed rgba(var(--border-color), 0.5); /* Пунктирная линия для разделения */
+    border-bottom: 1px dashed rgba(48, 54, 61, 0.5);
 }
 
 .repo-item:last-child {
-    border-bottom: none; /* Убираем линию у последнего элемента */
+    border-bottom: none;
     padding-bottom: 0;
+}
+
+.repo-name-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 4px;
 }
 
 .repo-name {
     font-size: 1rem;
     font-weight: 500;
-    color: #58a6ff; /* Ссылки на репозитории в стиле GitHub */
+    color: #58a6ff;
     text-decoration: none;
-    margin-bottom: 4px;
-    display: block;
 }
 
 .repo-name:hover {
     text-decoration: underline;
+}
+
+.repo-stars {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    margin-left: 8px;
 }
 
 .repo-description {
@@ -426,14 +502,95 @@ body {
 }
 
 /* Адаптивность для мобильных экранов */
+/* Контейнер для уведомлений */
+#notification-container {
+    position: fixed;
+    top: 20px;
+    width: 100%;
+    max-width: var(--header-width);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+    pointer-events: none; /* Чтобы не блокировать клики под ним */
+}
+
+.notification {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transform: translateY(-20px); /* Начальное состояние для анимации */
+    animation: slideIn 0.3s forwards ease-out, fadeOut 0.5s forwards ease-in 4.5s; /* Появление и исчезновение через 4.5с */
+    pointer-events: all; /* Включить события для самого уведомления */
+    margin: 0 auto; /* Центрируем уведомление */
+}
+
+.notification.success {
+    border-color: var(--accent-color);
+}
+
+.notification.error {
+    border-color: var(--error-color);
+}
+
+.notification-message {
+    flex-grow: 1;
+    font-size: 0.9rem;
+}
+
+.notification-close-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-left: 15px;
+    transition: color 0.2s;
+}
+
+.notification-close-btn:hover {
+    color: var(--text-primary);
+}
+
+/* Анимации для уведомлений */
+@keyframes slideIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
 @media (max-width: 600px) {
     :root {
-        /* На маленьких экранах уменьшаем ширину под размер экрана, чтобы не вылезало */
         --input-width: 100%;
     }
     
     .app-container {
         margin-top: 20px;
+    }
+
+    #notification-container {
+        width: calc(100% - 40px); /* Отступы по бокам для мобильных */
+        left: 20px;
+        right: 20px;
     }
     
     .search-wrapper {
@@ -450,11 +607,20 @@ body {
         width: 100%;
     }
 
-    .cards-container {
+    .reset-btn {
+        width: 100%;
+    }
+
+    .user-group {
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+    }
+
+    .main-card {
         width: 100%;
         margin: 24px 0 0 0;
         padding: 0;
-        justify-content: center;
     }
 
     .user-card {
@@ -464,12 +630,4 @@ body {
     .lang-card {
         width: 100%;
     }
-
-    .main-card {
-        flex-direction: column;
-        align-items: center;
-        gap: 24px;
-    }
 }
-
-

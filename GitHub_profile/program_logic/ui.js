@@ -10,9 +10,6 @@ import { getLanguageColor } from './languageColors.js';
  * @param {Object} userData - Данные пользователя от GitHub API
  */
 export function renderUserCard(container, userData) {
-    // Очищаем контейнер перед выводом новой карточки
-    container.innerHTML = ""; // Очищаем только в начале отрисовки новой пары карточек
-
     // Подготовка данных с дефолтными значениями на случай их отсутствия
     const avatarUrl = userData.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150';
     const name = userData.name || userData.login || 'Имя не указано';
@@ -23,7 +20,12 @@ export function renderUserCard(container, userData) {
 
     // Создаем элемент карточки
     const card = document.createElement('div');
-    card.className = 'user-card';
+    card.className = 'user-card card-animate';
+
+    // Вычисляем задержку анимации на основе количества уже существующих карточек
+    const existingCards = container.querySelectorAll('.user-card');
+    const delay = existingCards.length * 0.15;
+    card.style.animationDelay = `${delay}s`;
 
     // Заполняем структуру карточки согласно требованиям
     card.innerHTML = `
@@ -45,20 +47,29 @@ export function renderUserCard(container, userData) {
  */
 export function renderRepoCard(container, reposData) {
     if (!reposData || reposData.length === 0) {
-        // Если репозиториев нет, можно показать соответствующее сообщение или ничего не делать
-        // container.innerHTML += `<div class="info-state">Нет публичных репозиториев.</div>`;
         return;
     }
 
     const repoCard = document.createElement("div");
-    repoCard.className = "repo-card user-card"; // Используем те же стили, что и для user-card
+    repoCard.className = "repo-card user-card card-animate";
 
-    let reposHtml = reposData.map(repo => `
-        <div class="repo-item">
-            <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="repo-name">${repo.name}</a>
-            <p class="repo-description">${repo.description || "Без описания"}</p>
-        </div>
-    `).join("");
+    // Вычисляем задержку анимации на основе количества уже существующих карточек
+    const existingCards = container.querySelectorAll('.user-card');
+    const delay = existingCards.length * 0.15;
+    repoCard.style.animationDelay = `${delay}s`;
+
+    let reposHtml = reposData.map(repo => {
+        const stars = repo.stargazers_count !== undefined ? repo.stargazers_count : 0;
+        return `
+            <div class="repo-item">
+                <div class="repo-name-row">
+                    <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="repo-name">${repo.name}</a>
+                    <span class="repo-stars">⭐ ${stars}</span>
+                </div>
+                <p class="repo-description">${repo.description || "Без описания"}</p>
+            </div>
+        `;
+    }).join("");
 
     repoCard.innerHTML = `
         <h3 class="repo-card-title">Последние 5 репозиториев</h3>
@@ -102,7 +113,42 @@ export function showError(container, message) {
 export function clearContainer(container) {
     container.innerHTML = "";
 }
-/** */
+
+/**
+ * Показывает уведомление в верхней части страницы.
+ * @param {string} message - Текст уведомления
+ * @param {"success" | "error"} type - Тип уведомления (для стилизации)
+ * @param {number} duration - Длительность показа уведомления в миллисекундах (по умолчанию 5000)
+ */
+export function showNotification(message, type, duration = 5000) {
+    const notificationContainer = document.getElementById("notification-container");
+    if (!notificationContainer) {
+        console.error("Контейнер для уведомлений #notification-container не найден.");
+        return;
+    }
+
+    const notificationEl = document.createElement("div");
+    notificationEl.className = `notification ${type}`;
+    notificationEl.innerHTML = `
+        <span class="notification-message">${message}</span>
+        <button class="notification-close-btn">&times;</button>
+    `;
+
+    notificationContainer.appendChild(notificationEl);
+
+    // Закрытие по кнопке
+    notificationEl.querySelector(".notification-close-btn").addEventListener("click", () => {
+        notificationEl.remove();
+    });
+
+    // Автоматическое закрытие через duration
+    setTimeout(() => {
+        if (notificationEl.parentNode) {
+            notificationEl.remove();
+        }
+    }, duration);
+}
+
 /**
  * Создает и отрисовывает карточку с круговой диаграммой (пирогом) 
  * самых используемых языков программирования пользователя.
@@ -111,18 +157,16 @@ export function clearContainer(container) {
  * @param {Object} languagesData - Объект { languageName: totalBytes, ... }
  */
 export function renderLanguagesCard(container, languagesData) {
-    // Очищаем контейнер
-    container.innerHTML = "";
-
     // Проверяем, есть ли данные о языках
     const entries = Object.entries(languagesData);
     if (!entries || entries.length === 0) {
-        container.innerHTML = `
-            <div class="lang-card">
-                <h3 class="lang-card-title">Топ используемых языков</h3>
-                <div class="lang-empty">Нет данных о языках</div>
-            </div>
+        const card = document.createElement("div");
+        card.className = "lang-card";
+        card.innerHTML = `
+            <h3 class="lang-card-title">Топ используемых языков</h3>
+            <div class="lang-empty">Нет данных о языках</div>
         `;
+        container.appendChild(card);
         return;
     }
 
@@ -168,7 +212,7 @@ export function renderLanguagesCard(container, languagesData) {
         // Анимация: начальное состояние (невидим) — offset = dashOffset + segmentLength
         const initialOffset = dashOffset + segmentLength;
         // Финальное состояние — offset = dashOffset
-        const animationDelay = index * 0.2; // задержка 0.2с на каждый сегмент
+        const animationDelay = index * 0.15; // задержка 0.15с на каждый сегмент
 
         svgSlices += `
             <circle
@@ -192,6 +236,7 @@ export function renderLanguagesCard(container, languagesData) {
 
     // Сортируем легенду по убыванию процентов
     const legendSorted = [...chartData].sort((a, b) => b.bytes - a.bytes);
+    console.log("legendSorted:", legendSorted)
 
     let legendItems = legendSorted.map((item, index) => {
         const percent = ((item.bytes / totalBytes) * 100).toFixed(1);

@@ -21,6 +21,9 @@
             </div>
         </header>
 
+        <!-- Контейнер для уведомлений -->
+        <div id="notification-container"></div>
+
         <!-- Секция поиска и результатов ниже шапочки -->
         <main class="main-content">
             <div class="search-section">
@@ -28,18 +31,12 @@
                 <form class="search-wrapper" id="search-form">
                     <input type="text" id="username-input" placeholder="Введите юзернейм на GitHub..." class="search-input" aria-label="GitHub юзернейм" required autocomplete="off">
                     <button type="submit" class="search-btn">Найти</button>
+                    <button type="button" class="reset-btn" id="reset-btn">Сброс</button>
                 </form>
             </div>
             
-            <div class="main-card">
-                <!-- Левая колонка: карточка профиля + карточка репозиториев -->
-                <div class="left-column" id="cards-container">
-                    <!-- Сюда динамически добавляются карточки пользователей -->
-                </div>
-                <!-- Правая колонка: карточка топ языков -->
-                <div class="right-column" id="languages-container">
-                    <!-- Сюда динамически добавляется карточка топ языков -->
-                </div>
+            <div class="main-card" id="cards-container">
+                <!-- Сюда динамически добавляются группы пользователей -->
             </div>
             
         </main>
