@@ -169,6 +169,35 @@ body {
     box-shadow: 0 0 0 3px rgba(248, 81, 73, 0.4);
 }
 
+/* Кнопка "Удалить последнего" */
+.remove-btn {
+    height: 44px;
+    padding: 0 24px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #484f58; /* Темно-серый в стиле GitHub */
+    border: 1px solid rgba(240, 246, 242, 0.1);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+    white-space: nowrap;
+}
+
+.remove-btn:hover {
+    background-color: #6e7681;
+}
+
+.remove-btn:active {
+    transform: scale(0.98);
+}
+
+.remove-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(139, 148, 158, 0.4);
+}
+
 /* Контейнер для всех групп пользователей */
 .main-card {
     display: flex;
@@ -608,6 +637,10 @@ body {
     }
 
     .reset-btn {
+        width: 100%;
+    }
+
+    .remove-btn {
         width: 100%;
     }
 

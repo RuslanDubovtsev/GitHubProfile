@@ -6,8 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const usernameInput = document.getElementById('username-input');
     const cardsContainer = document.getElementById('cards-container');
     const resetBtn = document.getElementById('reset-btn');
+    const removeLastBtn = document.getElementById('remove-last-btn');
 
-    if (!searchForm || !usernameInput || !cardsContainer || !resetBtn) {
+    if (!searchForm || !usernameInput || !cardsContainer || !resetBtn || !removeLastBtn) {
         console.error('Не удалось найти необходимые элементы интерфейса на странице.');
         return;
     }
@@ -15,6 +16,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // Кнопка "Сброс" — перезагрузка страницы
     resetBtn.addEventListener('click', () => {
         location.reload();
+    });
+
+    // Кнопка "Удалить последнего"
+    removeLastBtn.addEventListener('click', () => {
+        const userGroups = cardsContainer.querySelectorAll('.user-group');
+        if (userGroups.length === 0) {
+            showNotification('Список пользователей пуст', 'error');
+            return;
+        }
+
+        const lastGroup = userGroups[userGroups.length - 1];
+        
+        // Находим разделитель перед этой группой (если он есть)
+        const previousElement = lastGroup.previousElementSibling;
+        if (previousElement && previousElement.classList.contains('user-separator')) {
+            previousElement.remove();
+        }
+
+        lastGroup.remove();
+        showNotification('Последний пользователь удален', 'success');
     });
 
     // Обработчик отправки формы поиска
